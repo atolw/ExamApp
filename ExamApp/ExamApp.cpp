@@ -7,21 +7,11 @@
 #include"app.h"
 int main()
 {
-	std::cout << "Hello World!\n";
-
-	app examApp;
-
-	examApp.registerUser();
-	examApp.registerUser();
-	examApp.login();
-	
-
-
-
-
- 
-
-	
-
-	
+    try {
+        App app;
+        app.run();
+    }
+    catch (const std::exception& ex) {
+        std::cerr << "Fatal error: " << ex.what() << "\n";
+    }
 }
