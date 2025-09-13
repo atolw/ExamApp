@@ -11,7 +11,8 @@ int main()
         App app;
         app.run();
     }
-    catch (const std::exception& ex) {
+    catch (const std::exception& ex)
+    {
         std::cerr << "Fatal error: " << ex.what() << "\n";
     }
 }

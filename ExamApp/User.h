@@ -43,7 +43,8 @@ public:
     User(const std::string& username_, const std::string& password_, userType type_ = regular)
         : username(username_), type(type_)
     {
-        if (username.empty() || password_.empty()) {
+        if (username.empty() || password_.empty())
+        {
             throw std::invalid_argument("Username and password cannot be empty.");
         }
         passwordHash = std::hash<std::string>{}(password_);
@@ -63,7 +64,8 @@ public:
     }
     void setType(userType t) { type = t; }
 
-    void assignExam(std::size_t examID) {
+    void assignExam(std::size_t examID)
+    {
         assignedExams.push_back(examID);
         ExamResult result;
         result.examID = examID;
@@ -75,13 +77,15 @@ public:
     const std::vector<ExamResult>& getResults() const { return results; }
 
 	// метод для пошуку результату екзамену по ID екзамену
-    ExamResult* findResult(std::size_t examID) {
+    ExamResult* findResult(std::size_t examID)
+    {
         for (auto& result : results) if (result.examID == examID) return &result;
         return nullptr;
     }
 
-	// оператори для збереження/завантаження користувача у файл :/
-    friend std::ostream& operator<<(std::ostream& out, const User& u) {
+	// оператори для збереження/завантаження користувача у файл
+    friend std::ostream& operator<<(std::ostream& out, const User& u)
+    {
         out << u.username << "\n";
         out << u.passwordHash << "\n";
         out << static_cast<int>(u.type) << "\n";
@@ -90,13 +94,15 @@ public:
         for (auto id : u.assignedExams) out << id << "\n";
 
         out << u.results.size() << "\n";
-        for (const auto& r : u.results) {
+        for (const auto& r : u.results)
+        {
             out << r.examID << " " << r.currentIndex << " " << r.correctAnswers << " " << r.completed << "\n";
         }
         return out;
     }
 
-    friend std::istream& operator>>(std::istream& in, User& u) {
+    friend std::istream& operator>>(std::istream& in, User& u)
+    {
         std::getline(in >> std::ws, u.username);
         in >> u.passwordHash;
         int t; in >> t; u.type = static_cast<userType>(t);
@@ -104,14 +110,16 @@ public:
         std::size_t assignedCount;
         in >> assignedCount;
         u.assignedExams.clear();
-        for (std::size_t i = 0; i < assignedCount; ++i) {
+        for (std::size_t i = 0; i < assignedCount; ++i)
+        {
             std::size_t id; in >> id; u.assignedExams.push_back(id);
         }
 
         std::size_t resultsCount;
         in >> resultsCount;
         u.results.clear();
-        for (std::size_t i = 0; i < resultsCount; ++i) {
+        for (std::size_t i = 0; i < resultsCount; ++i)
+        {
             ExamResult r;
             in >> r.examID >> r.currentIndex >> r.correctAnswers >> r.completed;
             u.results.push_back(r);

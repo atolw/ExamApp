@@ -9,30 +9,35 @@
 #include "User.h"
 #include "Exam.h"
 
-class App {
+class App 
+{
     std::vector<Exam> exams;
     std::vector<User> users;
     std::size_t nextExamID = 1;
 
-    Exam* findExamByID(std::size_t id) {
+    Exam* findExamByID(std::size_t id)
+    {
         for (auto &exam : exams) if (exam.getExamID() == id) return &exam;
         return nullptr;
     }
 
-    User* findUserByName(const std::string& uname) {
+    User* findUserByName(const std::string& uname)
+    {
         for (auto &user : users) if (user.getUsername() == uname) return &user;
         return nullptr;
     }
 
 	// створення питання з консолі
-    Question createQuestionFromInput() {
+    Question createQuestionFromInput()
+    {
         std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
         std::string text;
         std::cout << "Enter question text: ";
         std::getline(std::cin, text);
 
         std::vector<std::string> options;
-        for (int i = 0; i < 4; ++i) {
+        for (int i = 0; i < 4; ++i)
+        {
             std::string option;
             std::cout << "Option " << i << ": ";
             std::getline(std::cin, option);
@@ -42,13 +47,15 @@ class App {
         std::size_t correct;
         std::cout << "Enter index of correct option (0-3): ";
         std::cin >> correct;
-        if (correct >= options.size()) {
+        if (correct >= options.size())
+        {
             throw std::invalid_argument("Correct option out of range.");
         }
         return Question(text, options, correct);
     }
 
-    void adminAddExam() {
+    void adminAddExam()
+    {
         system("cls");
         std::string title, subject;
         std::cout << "Enter exam title: ";
@@ -59,14 +66,18 @@ class App {
 
         Exam e(title, nextExamID++, subject);
 
-        while (true) {
+        while (true)
+        {
             std::cout << "Add a question? (1 - yes, 0 - no): ";
             int c; std::cin >> c;
             if (!c) break;
-            try {
+            try
+            {
                 Question q = createQuestionFromInput();
                 e.addQuestion(q);
-            } catch (const std::exception& ex) {
+            } 
+            catch (const std::exception& ex) 
+            {
                 std::cout << "Error: " << ex.what() << "\n";
             }
         }
@@ -74,15 +85,18 @@ class App {
         std::cout << "Exam added with ID " << e.getExamID() << "\n";
     }
 
-    void adminViewExams() {
+    void adminViewExams()
+    {
         system("cls");
         if (exams.empty()) { std::cout << "No exams.\n"; return; }
-        for (const auto& e : exams) {
+        for (const auto& e : exams)
+        {
             std::cout << "ID: " << e.getExamID() << " | " << e.getExamName() << " (" << e.getSubject() << ") Questions: " << e.getQuestions().size() << "\n";
         }
     }
 
-    void adminAddUser() {
+    void adminAddUser()
+    {
         system("cls");
         std::string username, pass;
         std::cout << "New username: ";
@@ -96,7 +110,8 @@ class App {
         std::cout << "User created. Type: " << (t == admin ? "admin" : "regular") << "\n";
     }
 
-    void adminAssignExam() {
+    void adminAssignExam()
+    {
         system("cls");
         adminViewExams();
         std::cout << "Enter exam ID to assign: ";
@@ -113,11 +128,13 @@ class App {
         std::cout << "Assigned exam " << id << " to " << uname << "\n";
     }
 
-    void userViewAssignedExams(User& u) {
+    void userViewAssignedExams(User& u)
+    {
         system("cls");
         const auto& assigned = u.getAssignedExams();
         if (assigned.empty()) { std::cout << "No assigned exams.\n"; system("pause"); return; }
-        for (auto id : assigned) {
+        for (auto id : assigned)
+        {
             Exam* e = findExamByID(id);
             if (e) std::cout << "ID: " << id << " - " << e->getExamName() << "\n";
             else std::cout << "ID: " << id << " - (missing exam)\n";
@@ -125,7 +142,8 @@ class App {
 		
     }
 
-    void takeOrResumeExam(User& u) {
+    void takeOrResumeExam(User& u) 
+    {
         system("cls");
         userViewAssignedExams(u);
         std::cout << "Enter exam ID to take/resume: ";
@@ -154,12 +172,14 @@ class App {
             }
             std::cout << "Enter option index (or -1 to pause): ";
             int chosen; std::cin >> chosen;
-            if (chosen == -1) {
+            if (chosen == -1) 
+            {
                 result->currentIndex = i;
                 std::cout << "Progress saved. You can resume later.\n";
                 return;
             }
-            if (chosen < 0 || static_cast<std::size_t>(chosen) >= question.options.size()) {
+            if (chosen < 0 || static_cast<std::size_t>(chosen) >= question.options.size())
+            {
                 std::cout << "Invalid choice. Try again.\n";
                 --i; // repeat same question
                 continue;
@@ -175,7 +195,8 @@ class App {
 public:
     App() = default;
 
-    void save(const std::string& usersFile = "users.dat", const std::string& examsFile = "exams.dat") {
+    void save(const std::string& usersFile = "users.dat", const std::string& examsFile = "exams.dat")
+    {
         std::ofstream uf(usersFile);
         if (!uf) throw std::runtime_error("Cannot open users file for writing");
         uf << users.size() << "\n";
@@ -192,17 +213,17 @@ public:
 
     void load(const std::string& usersFile = "users.dat", const std::string& examsFile = "exams.dat") {
         std::ifstream uf(usersFile);
-        if (uf) {
+        if (uf)
+        {
             std::size_t ucount; uf >> ucount;
             users.clear();
             users.resize(ucount);
             for (std::size_t i = 0; i < ucount; ++i) uf >> users[i];
-        } else {
-           
         }
 
         std::ifstream ef(examsFile);
-        if (ef) {
+        if (ef) 
+        {
             std::size_t ecount; ef >> ecount;
             exams.clear();
             exams.resize(ecount);
@@ -216,9 +237,11 @@ public:
         }
         std::cout << "Loaded.\n";
     }
-    void run() {
+    void run()
+    {
         load();
-        while (true) {
+        while (true)
+        {
             std::cout << "\n1) Register\n2) Login\n3) Save & Exit\nChoose: ";
             int choice; std::cin >> choice;
             if (choice == 1) {
@@ -237,9 +260,11 @@ public:
                 User* u = findUserByName(username);
                 if (!u || u->getPasswordHash() != h) { std::cout << "Bad credentials\n"; continue; }
 
-                if (u->getType() == admin) {
+                if (u->getType() == admin)
+                {
 					// меню адміна
-                    while (true) {
+                    while (true)
+                    {
                         
                         std::cout << "\n[ADMIN MENU]\n1) Add exam\n2) View exams\n3) Add user\n4) Assign exam to user\n5) Save & logout\nChoose: ";
                         int c; std::cin >> c;
@@ -250,9 +275,11 @@ public:
                         else if (c == 5) { save(); break; }
                         else std::cout << "Invalid\n";
                     }
-                } else {
+                } else
+                {
 					// меню користувача
-                    while (true) {
+                    while (true)
+                    {
                         system("cls");
                         std::cout << "\n[USER MENU]\n1) View assigned exams\n2) Take/resume exam\n3) Save & logout\nChoose: ";
                         int c; std::cin >> c;
@@ -262,10 +289,12 @@ public:
                         else std::cout << "Invalid\n";
                     }
                 }
-            } else if (choice == 3) {
+            } else if (choice == 3) 
+            {
                 save();
                 break;
-            } else {
+            } else 
+            {
                 std::cout << "Invalid\n";
             }
         }

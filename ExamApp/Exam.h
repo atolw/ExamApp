@@ -19,17 +19,20 @@ struct Question
     Question(const std::string& text, const std::vector<std::string>& opts, std::size_t correctIndex)
         : questionText(text), options(opts), correctAnswerIndex(correctIndex)
     {
-        if (text.empty() || opts.empty() || correctIndex >= opts.size()) {
+        if (text.empty() || opts.empty() || correctIndex >= opts.size())
+        {
             throw std::invalid_argument("Invalid question parameters.");
         }
     }
 
-    bool isCorrectAnswer(std::size_t answerIndex) const {
+    bool isCorrectAnswer(std::size_t answerIndex) const 
+    {
         if (answerIndex >= options.size()) throw std::out_of_range("Answer index out of range.");
         return answerIndex == correctAnswerIndex;
     }
 
-    friend std::ostream& operator<<(std::ostream& out, const Question& q) {
+    friend std::ostream& operator<<(std::ostream& out, const Question& q)
+    {
         out << q.questionText << "\n";
         out << q.options.size() << "\n";
         for (const auto& option : q.options) out << option << "\n";
@@ -37,12 +40,14 @@ struct Question
         return out;
     }
 
-    friend std::istream& operator>>(std::istream& in, Question& q) {
+    friend std::istream& operator>>(std::istream& in, Question& q)
+    {
         std::getline(in >> std::ws, q.questionText);
         std::size_t optCount; in >> optCount;
         in.ignore();
         q.options.resize(optCount);
-        for (std::size_t i = 0; i < optCount; ++i) {
+        for (std::size_t i = 0; i < optCount; ++i)
+        {
             std::getline(in, q.options[i]);
         }
         in >> q.correctAnswerIndex;
@@ -78,12 +83,14 @@ public:
     void setExamID(std::size_t id) { examID = id; }
 
     void addQuestion(const Question& q) { questions.push_back(q); }
-    void removeQuestion(std::size_t idx) {
+    void removeQuestion(std::size_t idx)
+    {
         if (idx >= questions.size()) throw std::out_of_range("Question index out of range");
         questions.erase(questions.begin() + idx);
     }
 
-    friend std::ostream& operator<<(std::ostream& out, const Exam& e) {
+    friend std::ostream& operator<<(std::ostream& out, const Exam& e)
+    {
         out << e.examName << "\n";
         out << e.examID << "\n";
         out << e.subject << "\n";
@@ -92,7 +99,8 @@ public:
         return out;
     }
 
-    friend std::istream& operator>>(std::istream& in, Exam& e) {
+    friend std::istream& operator>>(std::istream& in, Exam& e)
+    {
         std::getline(in >> std::ws, e.examName);
         in >> e.examID;
         in.ignore();
