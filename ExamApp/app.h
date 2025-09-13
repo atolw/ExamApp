@@ -27,7 +27,7 @@ class App
         return nullptr;
     }
 
-	// створення питання з консолі
+	// Г±ГІГўГ®Г°ГҐГ­Г­Гї ГЇГЁГІГ Г­Г­Гї Г§ ГЄГ®Г­Г±Г®Г«Ві
     Question createQuestionFromInput()
     {
         std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
@@ -105,7 +105,7 @@ class App
         std::cout << "Password: ";
         std::cin >> pass;
 
-		userType t = (users.empty() ? admin : regular); // перший користувач - адмін
+		userType t = (users.empty() ? admin : regular); // ГЇГҐГ°ГёГЁГ© ГЄГ®Г°ГЁГ±ГІГіГўГ Г· - Г Г¤Г¬ВіГ­
         users.emplace_back(username, pass, t);
         std::cout << "User created. Type: " << (t == admin ? "admin" : "regular") << "\n";
     }
@@ -152,22 +152,26 @@ class App
         if (!exam) { std::cout << "No such exam.\n"; system("pause"); return; }
 
         ExamResult* result = u.findResult(id);
-        if (!result) {
+        if (!result)
+		{
             std::cout << "You are not assigned this exam.\n";
             system("pause");
             return;
         }
-        if (result->completed) {
+        if (result->completed) 
+		{
             std::cout << "This exam is already completed. Score: " << result->correctAnswers << " / " << exam->getQuestions().size() << "\n";
             system("pause");
             return;
         }
 
         auto& questions = exam->getQuestions();
-        for (std::size_t i = result->currentIndex; i < questions.size(); ++i) {
+        for (std::size_t i = result->currentIndex; i < questions.size(); ++i)
+		{
             const auto& question = questions[i];
             std::cout << "Question #" << i+1 << ": " << question.questionText << "\n";
-            for (std::size_t option = 0; option < question.options.size(); ++option) {
+            for (std::size_t option = 0; option < question.options.size(); ++option)
+			{
                 std::cout << "  " << option << ": " << question.options[option] << "\n";
             }
             std::cout << "Enter option index (or -1 to pause): ";
@@ -229,7 +233,8 @@ public:
             exams.resize(ecount);
             for (std::size_t i = 0; i < ecount; ++i) ef >> exams[i];
           
-            if (!(ef >> nextExamID)) {
+            if (!(ef >> nextExamID))
+			{
                 
                 nextExamID = 1;
                 for (const auto& e : exams) if (e.getExamID() >= nextExamID) nextExamID = e.getExamID() + 1;
@@ -244,7 +249,8 @@ public:
         {
             std::cout << "\n1) Register\n2) Login\n3) Save & Exit\nChoose: ";
             int choice; std::cin >> choice;
-            if (choice == 1) {
+            if (choice == 1)
+			{
                 std::string username, pass;
                 std::cout << "Username: "; std::cin >> username;
                 if (findUserByName(username)) { std::cout << "Exists\n"; continue; }
@@ -252,7 +258,8 @@ public:
                 userType t = users.empty() ? admin : regular;
                 users.emplace_back(username, pass, t);
                 std::cout << "Registered. " << (t==admin ? "You are admin (first user)." : "") << "\n";
-            } else if (choice == 2) {
+            } else if (choice == 2)
+			{
                 std::string username, pass;
                 std::cout << "Username: "; std::cin >> username;
                 std::cout << "Password: "; std::cin >> pass;
@@ -262,7 +269,7 @@ public:
 
                 if (u->getType() == admin)
                 {
-					// меню адміна
+					// Г¬ГҐГ­Гѕ Г Г¤Г¬ВіГ­Г 
                     while (true)
                     {
                         
@@ -277,7 +284,7 @@ public:
                     }
                 } else
                 {
-					// меню користувача
+					// Г¬ГҐГ­Гѕ ГЄГ®Г°ГЁГ±ГІГіГўГ Г·Г 
                     while (true)
                     {
                         system("cls");
