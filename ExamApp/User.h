@@ -6,53 +6,50 @@
 #include <stdexcept>
 #include <cstddef>
 
-enum userType
-{
-    regular,
-    admin
-};
 /// <summary>
-/// Структура для збереження результатів екзамену користувача. 
-/// Потрібна для відстеження прогресу по кожному екзамену та для 
-/// можливості продовження незавершених екзаменів.
+/// Структура для управління результатами тесту користувача. 
+/// Зберігає ID тесту, поточний індекс питання та кількість 
+/// правильних відповідей для відновлення прогресу користувача.
 /// </summary>
 struct ExamResult {
     std::size_t examID = 0;
-    std::size_t currentIndex = 0;   // індекс для збереження прогресу
+    std::size_t currentIndex = 0;   // Індекс для продовження тесту
     std::size_t correctAnswers = 0;
     bool completed = false;
 };
 
+class App; // Forward declaration
+
 /// <summary>
-/// Базовий клас для користувача системи екзаменів. 
-/// Зберігає інформацію про ім'я користувача, хеш пароля, тип користувача (регулярний або адміністратор).
-/// Має методи для встановлення і отримання цих даних, а також для
-/// призначення екзаменів та збереження результатів.
+/// Базовий клас для користувачів системи. 
+/// Кожен користувач має своє ім'я, пароль, та призначені тести (засобами або адміністратора).
+/// Цей клас є абстрактним і призначений для успадкування у підкласи, і кожен
+/// підклас матиме свою реалізацію для виконання та управління завданнями.
 /// </summary>
 class User
 {
     std::string username;
-	std::size_t passwordHash{}; // хеш пароля
-    userType type;
-	std::vector<std::size_t> assignedExams; // ліст ID призначених екзаменів
-	std::vector<ExamResult> results; // прогрес по кожному призначеному екзамену
+	std::size_t passwordHash{}; // Хеш паролю
+	std::vector<std::size_t> assignedExams; // ID призначених тестів
+	std::vector<ExamResult> results; // Результати від завдання прройденого тесту
 
 public:
     User() = default;
 
-    User(const std::string& username_, const std::string& password_, userType type_ = regular)
-        : username(username_), type(type_)
+    User(const std::string& username_, const std::string& password_)
+		: username(username_), passwordHash(std::hash<std::string>{}(password_)), assignedExams(), results()
     {
         if (username.empty() || password_.empty())
         {
             throw std::invalid_argument("Username and password cannot be empty.");
         }
-        passwordHash = std::hash<std::string>{}(password_);
     }
+
+    virtual ~User() = default;
 
     const std::string& getUsername() const { return username; }
     std::size_t getPasswordHash() const { return passwordHash; }
-    userType getType() const { return type; }
+    
 
     void setUsername(const std::string& u) {
         if (u.empty()) throw std::invalid_argument("Username cannot be empty.");
@@ -62,7 +59,7 @@ public:
         if (p.empty()) throw std::invalid_argument("Password cannot be empty.");
         passwordHash = std::hash<std::string>{}(p);
     }
-    void setType(userType t) { type = t; }
+   
 
     void assignExam(std::size_t examID)
     {
@@ -76,19 +73,19 @@ public:
     std::vector<ExamResult>& getResults() { return results; }
     const std::vector<ExamResult>& getResults() const { return results; }
 
-	// метод для пошуку результату екзамену по ID екзамену
+	// Метод для пошуку результату тесту за ID тесту
     ExamResult* findResult(std::size_t examID)
     {
         for (auto& result : results) if (result.examID == examID) return &result;
         return nullptr;
     }
 
-	// оператори для збереження/завантаження користувача у файл
+	// Оператори для серіалізації/десеріалізації до файлу
     friend std::ostream& operator<<(std::ostream& out, const User& u)
     {
         out << u.username << "\n";
         out << u.passwordHash << "\n";
-        out << static_cast<int>(u.type) << "\n";
+      
 
         out << u.assignedExams.size() << "\n";
         for (auto id : u.assignedExams) out << id << "\n";
@@ -105,7 +102,7 @@ public:
     {
         std::getline(in >> std::ws, u.username);
         in >> u.passwordHash;
-        int t; in >> t; u.type = static_cast<userType>(t);
+        
 
         std::size_t assignedCount;
         in >> assignedCount;
@@ -128,4 +125,20 @@ public:
         std::string musor; std::getline(in, musor);
         return in;
     }
+
+	virtual void menu(App *app) = 0; // Чистий віртуальний метод для реалізації меню користувачем
+};
+
+class Admin : public User
+{
+public:
+    using User::User;
+    void menu(App *app) override;
+};
+
+class RegularUser : public User
+{
+public:
+	using User::User;
+	void menu(App* app) override;
 };
