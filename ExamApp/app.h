@@ -1,4 +1,4 @@
-#pragma once
+п»ї#pragma once
 #include <vector>
 #include <iostream>
 #include <fstream>
@@ -27,7 +27,7 @@ class App
         return nullptr;
     }
 
-	// Створення питання з консолі
+	// РЎС‚РІРѕСЂРµРЅРЅСЏ РїРёС‚Р°РЅРЅСЏ Р· РєРѕРЅСЃРѕР»С–
     Question createQuestionFromInput()
     {
         std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
