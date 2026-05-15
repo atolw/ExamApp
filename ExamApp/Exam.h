@@ -1,4 +1,4 @@
-#pragma once
+п»ї#pragma once
 #include <string>
 #include <vector>
 #include <stdexcept>
@@ -6,13 +6,14 @@
 #include <iostream>
 
 /// <summary>
-/// Структура для збереження питання екзамену. 
+/// РЎС‚СЂСѓРєС‚СѓСЂР° РґР»СЏ Р·Р±РµСЂРµР¶РµРЅРЅСЏ РїРёС‚Р°РЅРЅСЏ РµРєР·Р°РјРµРЅСѓ. 
 /// </summary>
 struct Question
 {
     std::string questionText;
     std::vector<std::string> options;
     std::size_t correctAnswerIndex{};
+
 
     Question() = default;
 
@@ -57,7 +58,7 @@ struct Question
     }
 };
 /// <summary>
-/// Клас для збереження екзамену. 
+/// РљР»Р°СЃ РґР»СЏ Р·Р±РµСЂРµР¶РµРЅРЅСЏ РµРєР·Р°РјРµРЅСѓ. 
 /// </summary>
 class Exam
 {
